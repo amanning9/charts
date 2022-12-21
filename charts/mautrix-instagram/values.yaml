@@ -1,9 +1,9 @@
-# Default values for mautrix-facebook.
+# Default values for mautrix-instagram.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 image:
-  repository: dock.mau.dev/mautrix/facebook 
+  repository: dock.mau.dev/mautrix/instagram
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
@@ -18,7 +18,6 @@ podSecurityContext:
   runAsNonRoot: true
 
 securityContext:
-  allowPrivilegeEscalation: false
   capabilities:
     drop:
     - ALL
@@ -26,10 +25,11 @@ securityContext:
   runAsNonRoot: true
   runAsUser: 1337
   runAsGroup: 1337
+  allowPrivilegeEscalation: false
 
 service:
   type: ClusterIP
-  port: 29319
+  port: 29330
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -49,7 +49,7 @@ tolerations: []
 
 affinity: {}
 
-# Mautrix-facebook configuration must be in the config key here:
+# Mautrix-instagram configuration must be in the config key here:
 # however it is recomended to keep it in a different file and
 # use --set-file config=config.yaml when invoking helm.
 # This allows diffing with the example configuration to update it.
