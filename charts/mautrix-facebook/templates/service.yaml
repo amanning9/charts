@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "mautrix-facebook.fullname" . }}-appservice-nocollide
+  labels:
+    {{- include "mautrix-facebook.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: appservice
+      protocol: TCP
+      name: appservice
+  selector:
+    {{- include "mautrix-facebook.selectorLabels" . | nindent 4 }}
