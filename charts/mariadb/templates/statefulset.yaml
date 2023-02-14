@@ -1,16 +1,15 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
-  name: {{ include "node-red.fullname" . }}
+  name: {{ include "mariadb.fullname" . }}
   labels:
-    {{- include "node-red.labels" . | nindent 4 }}
+    {{- include "mariadb.labels" . | nindent 4 }}
 spec:
   replicas: 1
-  strategy:
-    type: Recreate
+  serviceName: {{ include "mariadb.fullname" . }}
   selector:
     matchLabels:
-      {{- include "node-red.selectorLabels" . | nindent 6 }}
+      {{- include "mariadb.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -18,15 +17,12 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "node-red.selectorLabels" . | nindent 8 }}
+        {{- include "mariadb.selectorLabels" . | nindent 8 }}
     spec:
-      hostNetwork: true
-      dnsPolicy: ClusterFirstWithHostNet
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "node-red.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -36,22 +32,28 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - name: http
-              containerPort: 1880
+            - name: mysql
+              containerPort: 3306
               protocol: TCP
+          startupProbe:
+            tcpSocket:
+              port: mysql
+            failureThreshold: 30
+            periodSeconds: 10
           livenessProbe:
-            httpGet:
-              path: /
-              port: http
+            tcpSocket:
+              port: mysql
           readinessProbe:
-            httpGet:
-              path: /
-              port: http
+            initialDelaySeconds: 60
+            tcpSocket:
+              port: mysql
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          env:
+            {{- toYaml .Values.envVars | nindent 12 }}
           volumeMounts:
             - name: data
-              mountPath: /data
+              mountPath: /config
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -67,4 +69,4 @@ spec:
       volumes:
         - name: data
           persistentVolumeClaim:
-            claimName: {{ include "node-red.fullname" . }}
+            claimName: {{ include "mariadb.fullname" . }}

@@ -1,0 +1,65 @@
+# Default values for mariadb.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+image:
+  repository: docker.io/linuxserver/mariadb
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+podAnnotations: {}
+
+podSecurityContext:
+  fsGroup: 911
+
+securityContext: {}
+#capabilities:
+#    drop:
+#    - ALL
+  # readOnlyRootFilesystem: true
+  #runAsNonRoot: true
+  #runAsUser: 911
+
+service:
+  type: ClusterIP
+  port: 3306
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+pvc:
+  storage: 10Gi
+  storageClassName: ""
+
+envVars:
+  # Docs: https://docs.linuxserver.io/images/docker-mariadb
+  - name: MYSQL_ROOT_PASSWORD
+    value: ""
+  - name: TZ
+    value: Europe/London
+  - name: MYSQL_DATABASE
+    value: ""
+  - name: MYSQL_USER
+    value: ""
+  - name: MYSQL_PASSWORD
+    value: ""
