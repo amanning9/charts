@@ -1,0 +1,16 @@
+---
+branches:
+  - main
+
+pipeline:
+  clone-real:
+    image: "docker.io/alpine/git"
+    commands:
+      - git clone --no-tags --depth=1 https://github.com/mastodon/chart.git mastodon-chart
+  package:
+    image: "docker.io/alpine/helm:latest"
+    secrets: [helm_user, helm_password, helm_repo]
+    commands:
+      - helm plugin install https://github.com/chartmuseum/helm-push
+      - helm repo add therepo $HELM_REPO --username $HELM_USER --password $HELM_PASSWORD
+      - helm cm-push mastodon-chart therepo
