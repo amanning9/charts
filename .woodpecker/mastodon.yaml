@@ -11,6 +11,7 @@ pipeline:
     image: "docker.io/alpine/helm:latest"
     secrets: [helm_user, helm_password, helm_repo]
     commands:
+      - helm dependency build mastodon-chart
       - helm plugin install https://github.com/chartmuseum/helm-push
       - helm repo add therepo $HELM_REPO --username $HELM_USER --password $HELM_PASSWORD
       - helm cm-push mastodon-chart therepo
