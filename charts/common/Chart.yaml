@@ -1,5 +1,0 @@
----
-apiVersion: v2
-name: a09-common
-type: library
-version: 0.1.1

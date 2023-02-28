@@ -1,6 +1,6 @@
 ---
 when:
-  path: "charts/common/*"
+  path: "charts/esphome/*"
 branches:
   - main
 pipeline:
@@ -10,4 +10,4 @@ pipeline:
     commands:
       - helm plugin install https://github.com/chartmuseum/helm-push
       - helm repo add therepo $HELM_REPO --username $HELM_USER --password $HELM_PASSWORD
-      - helm cm-push charts/common therepo
+      - helm cm-push charts/esphome therepo

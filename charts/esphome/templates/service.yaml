@@ -1,0 +1,21 @@
+{{- if .Values.esphome.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "esphome.fullname" . }}
+  labels:
+    {{- include "esphome.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: 6052
+      targetPort: http
+      protocol: TCP
+      name: http
+      {{- with .Values.service.nodePort }}
+      nodePort: {{ . }}
+      {{- end }}
+  selector:
+    hass.kube.a09.uk/automationService: esphome
+    {{- include "esphome.selectorLabels" . | nindent 4 }}
+{{- end }}
