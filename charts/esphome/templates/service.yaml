@@ -1,4 +1,3 @@
-{{- if .Values.esphome.enabled -}}
 apiVersion: v1
 kind: Service
 metadata:
@@ -18,4 +17,3 @@ spec:
   selector:
     hass.kube.a09.uk/automationService: esphome
     {{- include "esphome.selectorLabels" . | nindent 4 }}
-{{- end }}
