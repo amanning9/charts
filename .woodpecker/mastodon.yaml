@@ -1,4 +1,6 @@
 ---
+when:
+  branch: never
 branches:
   - never
 
