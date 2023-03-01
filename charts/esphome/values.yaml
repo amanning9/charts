@@ -1,6 +1,5 @@
 # Default values for esphome.
 # This is a YAML-formatted file.
-
 image:
   repository: ghcr.io/esphome/esphome
   pullPolicy: IfNotPresent

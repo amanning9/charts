@@ -1,6 +1,6 @@
 ---
 when:
-  path: "charts/esphome/*"
+  path: "charts/esphome/**"
 branches:
   - main
 pipeline:
