@@ -66,4 +66,8 @@ spec:
       volumes:
         - name: config
           persistentVolumeClaim:
+            {{- if not .Values.pvc.existingClaim }}
             claimName: {{ include "esphome.fullname" . }}-config
+            {{- else }}
+            claimName: {{ .Values.pvc.existingClaim }}
+            {{- end }}
