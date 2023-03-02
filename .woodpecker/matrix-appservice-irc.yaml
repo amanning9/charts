@@ -1,6 +1,6 @@
 ---
 when:
-  path: "charts/matrix-appservice-irc/*"
+  path: "charts/matrix-appservice-irc/**"
 branches:
   - main
 pipeline:

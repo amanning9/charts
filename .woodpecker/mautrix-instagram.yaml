@@ -1,6 +1,6 @@
 ---
 when:
-  path: "charts/mautrix-instagram/*"
+  path: "charts/mautrix-instagram/**"
 branches:
   - main
 pipeline:
