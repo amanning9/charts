@@ -6,7 +6,7 @@ metadata:
   labels:
     {{- include "homeassistant.labels" . | nindent 4 }}
 spec:
-  secretName: {{ include "homeassistant.fullname" . }}-cert-secret
+  secretName: {{ include "homeassistant.fullname" . }}-tls-cert-secret
   secretTemplate:
     labels:
       {{- include "homeassistant.labels" . | nindent 6 }}

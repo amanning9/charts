@@ -113,7 +113,7 @@ spec:
             name: {{ include "homeassistant.fullname" . }}-initscript
         - name: certificate-secret
           secret:
-            secretName: {{ include "homeassistant.fullname" . }}-cert-secret
+            secretName: {{ include "homeassistant.fullname" . }}-tls-cert-secret
         - name: main-configmap
           configMap:
             name: {{ include "homeassistant.fullname" . }}-configuration
