@@ -27,7 +27,6 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "zigbee2mqtt.serviceAccountName" . }}-zigbee2mqtt
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       priorityClassName: {{ .Values.priorityClassName }}
