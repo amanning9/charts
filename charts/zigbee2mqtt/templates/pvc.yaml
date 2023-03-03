@@ -1,0 +1,17 @@
+{{- if not .Values.pvc.existingClaim -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "zigbee2mqtt.fullname" . }}-zigbee2mqtt-data
+  labels:
+    {{- include "zigbee2mqtt.labels" . | nindent 4 }}
+  annotations:
+    helm.sh/resource-policy: "keep"
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: {{ .Values.pvc.storageClassName | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.pvc.storage | quote }}
+{{- end }}

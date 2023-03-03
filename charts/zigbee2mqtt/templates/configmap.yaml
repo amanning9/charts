@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "zigbee2mqtt.fullname" . }}-confoverride
+  labels:
+    {{- include "zigbee2mqtt.labels" . | nindent 4 }}
+data:
+    {{- if .Values.config.injectMqttAddress }}
+    ZIGBEE2MQTT_CONFIG_MQTT_SERVER: {{ .Values.injectMqttAddress }}
+    {{- end }}
+    {{- with .Values.config.timezone }}
+    TZ: {{ . | quote }}
+    {{- end }}
+    {{- list .Values.configOverride "ZIGBEE2MQTT_CONFIG" | include "recurseFlattenMap" | nindent 4 }}

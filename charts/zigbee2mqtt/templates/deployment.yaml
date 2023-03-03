@@ -1,0 +1,93 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "zigbee2mqtt.fullname" . }}-zigbee2mqtt
+  labels:
+    {{- include "zigbee2mqtt.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      hass.kube.a09.uk/automationService: zigbee2mqtt
+      {{- include "zigbee2mqtt.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/zigbee2mqtt/configmap.yaml") . | sha256sum }}
+      {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        hass.kube.a09.uk/automationService: zigbee2mqtt
+        {{- include "zigbee2mqtt.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "zigbee2mqtt.serviceAccountName" . }}-zigbee2mqtt
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      priorityClassName: {{ .Values.priorityClassName }}
+      containers:
+        - name: {{ .Chart.Name }}-zigbee2mqtt
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.configOverride.frontend }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          #startupProbe:
+          #  httpGet:
+          #    path: /
+          #    port: http
+          #  failureThreshold: 30
+          #livenessProbe:
+          #  httpGet:
+          #    path: /
+          #    port: http
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: data
+              mountPath: /app/data
+            - name: device
+              mountPath: /dev/ttyACM0
+          envFrom:
+            - configMapRef:
+                name: {{ include "zigbee2mqtt.fullname" . }}-confoverride
+          securityContext:
+            privileged: true
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            {{- if not .Values.pvc.existingClaim }}
+            claimName: {{ include "zigbee2mqtt.fullname" . }}-zigbee2mqtt-data
+            {{- else }}
+            claimName: {{ .Values.pvc.existingClaim }}
+            {{- end }}
+        - name: device
+          hostPath:
+            path: {{ .Values.config.devicePath | quote }}
+            type: CharDevice

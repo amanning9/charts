@@ -1,0 +1,24 @@
+{{- if .Values.ingress.enabled -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "zigbee2mqtt.fullname" . }}-zigbee2mqtt
+  labels:
+    {{- include "zigbee2mqtt.labels" . | nindent 4 }}
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+spec:
+  rules:
+    - host: {{ .Values.ingress.host }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "zigbee2mqtt.fullname" . }}
+                port:
+                  name: http
+{{- end }}
