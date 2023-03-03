@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "homeassistant.fullname" . }}-initscript
+  labels:
+    {{- include "homeassistant.labels" . | nindent 4 }}
+data:
+    init.py: |
+        import pathlib
+        # Symlink some paths to move them outside the config volume.
+        paths = {"/config/.storage": "/media/storage", "/config/configuration.yaml": "/media/configuration/configuration.yaml"}
+        for from_p, to in paths.items():
+            try:
+                from_path = pathlib.Path(from_p)
+                from_path.symlink_to(to)
+                print(f'Created {from_p} -> {to}')
+            except FileExistsError:
+                print(f'{from_p} -> {to} link already existed.')

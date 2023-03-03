@@ -1,0 +1,35 @@
+{{- if not .Values.pvc.config.existingClaim -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "homeassistant.fullname" . }}-config
+  labels:
+    {{- include "homeassistant.labels" . | nindent 4 }}
+  annotations:
+    helm.sh/resource-policy: "keep"
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: {{ .Values.pvc.config.storageClassName | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.pvc.config.storage | quote }}
+{{- end }}
+---
+{{- if not .Values.pvc.storage.existingClaim -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "homeassistant.fullname" . }}-storage
+  labels:
+    {{- include "homeassistant.labels" . | nindent 4 }}
+  annotations:
+    helm.sh/resource-policy: "keep"
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: {{ .Values.pvc.storage.storageClassName | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.pvc.storage.storage | quote }}
+{{- end }}
