@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "zigbee2mqtt.fullname" . }}-zigbee2mqtt
+  name: {{ include "zigbee2mqtt.fullname" . }}
   labels:
     {{- include "zigbee2mqtt.labels" . | nindent 4 }}
 spec:
