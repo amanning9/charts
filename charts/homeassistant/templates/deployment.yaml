@@ -104,10 +104,18 @@ spec:
       volumes:
         - name: config
           persistentVolumeClaim:
+            {{- if not .Values.pvc.config.existingClaim }}
             claimName: {{ include "homeassistant.fullname" . }}-config
+            {{- else }}
+            claimName: {{ .Values.pvc.config.existingClaim }}
+            {{- end }}
         - name: storage
           persistentVolumeClaim:
+            {{- if not .Values.pvc.storage.existingClaim }}
             claimName: {{ include "homeassistant.fullname" . }}-storage
+            {{- else }}
+            claimName: {{ .Values.pvc.storage.existingClaim }}
+            {{- end }}
         - name: init
           configMap:
             name: {{ include "homeassistant.fullname" . }}-initscript
