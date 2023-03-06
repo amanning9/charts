@@ -5,6 +5,7 @@ metadata:
   labels:
     {{- include "zigbee2mqtt.labels" . | nindent 4 }}
 spec:
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   replicas: 1
   strategy:
     type: Recreate

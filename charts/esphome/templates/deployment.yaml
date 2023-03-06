@@ -6,6 +6,7 @@ metadata:
   labels:
     {{- include "esphome.labels" . | nindent 4 }}
 spec:
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   replicas: 1
   strategy:
     type: Recreate
