@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "jellyfin.fullname" . }}
+  labels:
+    {{- include "jellyfin.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "jellyfin.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "jellyfin.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8096
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: media
+              mountPath: /media
+            - name: cache
+              mountPath: /cache
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            {{- if not .Values.pvc.config.existingClaim }}
+            claimName: {{ include "jellyfin.fullname" . }}-config
+            {{- else }}
+            claimName: {{ .Values.pvc.config.existingClaim }}
+            {{- end }}
+        - name: media
+          persistentVolumeClaim:
+            {{- if not .Values.pvc.media.existingClaim }}
+            claimName: {{ include "jellyfin.fullname" . }}-media
+            {{- else }}
+            claimName: {{ .Values.pvc.media.existingClaim }}
+            {{- end }}
+        - name: cache
+          persistentVolumeClaim:
+            {{- if not .Values.pvc.cache.existingClaim }}
+            claimName: {{ include "jellyfin.fullname" . }}-cache
+            {{- else }}
+            claimName: {{ .Values.pvc.cache.existingClaim }}
+            {{- end }}
