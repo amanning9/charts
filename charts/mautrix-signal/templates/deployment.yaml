@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "mautrix-signal.fullname" . }}
+  labels:
+    {{- include "mautrix-signal.labels" . | nindent 4 }}
+spec:
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "mautrix-signal.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+      {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "mautrix-signal.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: appservice
+              containerPort: 29328
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: mainconfig
+              readOnly: true
+              mountPath: "/data"
+            - mountPath: /signald
+              name: signald-socket
+          command:
+            - python3
+            - -m
+            - mautrix_signal
+            - -c
+            - /data/config.yaml
+
+        - name: signald
+          securityContext:
+            {{- toYaml .Values.signald.securityContext | nindent 12 }}
+          image: "{{ .Values.signald.image.repository }}:{{ .Values.signald.image.tag }}"
+          imagePullPolicy: {{ .Values.signald.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.signald.resources | nindent 12 }}
+          volumeMounts:
+            - mountPath: /signald
+              name: signald-socket
+          envFrom:
+            - secretRef:
+              name: {{ include "mautrix-signal.fullname" . }}-signald-config
+
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+        - name: mainconfig
+          secret:
+            secretName: {{ include "mautrix-facebook.fullname" . }}
+        - name: signald-socket
+          emptyDir: {}
