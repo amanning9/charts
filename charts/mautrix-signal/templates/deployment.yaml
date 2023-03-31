@@ -63,7 +63,7 @@ spec:
               name: signald-socket
           envFrom:
             - secretRef:
-              name: {{ include "mautrix-signal.fullname" . }}-signald-config
+                name: {{ include "mautrix-signal.fullname" . }}-signald-config
 
       {{- with .Values.nodeSelector }}
       nodeSelector:
