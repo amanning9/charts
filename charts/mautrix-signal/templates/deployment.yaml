@@ -86,7 +86,7 @@ spec:
         - name: signald-data
           persistentVolumeClaim:
             {{- if not .Values.signald.pvc.existingClaim }}
-            claimName: {{ include "mautrix-signal.fullname" . }}-storage
+            claimName: {{ include "mautrix-signal.fullname" . }}-signald-data
             {{- else }}
             claimName: {{ .Values.signald.pvc.existingClaim }}
             {{- end }}
