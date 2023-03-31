@@ -61,7 +61,7 @@ signald:
   image:
     repository: registry.gitlab.com/signald/signald
     pullPolicy: IfNotPresent
-    tag: "0.23.2"
+    tag: "0.23.0"
   config: {}
 #    database: ""
   pvc:
