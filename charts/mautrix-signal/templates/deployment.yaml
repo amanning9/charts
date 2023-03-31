@@ -80,6 +80,13 @@ spec:
       volumes:
         - name: mainconfig
           secret:
-            secretName: {{ include "mautrix-facebook.fullname" . }}
+            secretName: {{ include "mautrix-signal.fullname" . }}
         - name: signald-socket
           emptyDir: {}
+        - name: signald-data
+          persistentVolumeClaim:
+            {{- if not .Values.signald.pvc.existingClaim }}
+            claimName: {{ include "mautrix-signal.fullname" . }}-storage
+            {{- else }}
+            claimName: {{ .Values.signald.pvc.existingClaim }}
+            {{- end }}

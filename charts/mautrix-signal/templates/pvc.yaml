@@ -1,0 +1,15 @@
+{{- if not .Values.signald.pvc.existingClaim -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "mautrix-signal.fullname" . }}-signald-data
+  labels:
+    {{- include "mautrix-signal.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: {{ .Values.signald.pvc.storageClassName | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.signald.pvc.storage | quote }}
+{{- end }}
