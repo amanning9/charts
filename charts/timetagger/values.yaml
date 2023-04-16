@@ -63,6 +63,6 @@ users:
 #  username: password
 
 config:
-  bind: 0.0.0.0
+  bind: 0.0.0.0:80
   datadir: /root/_timetagger
   log_level: info
