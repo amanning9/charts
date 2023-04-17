@@ -2,7 +2,7 @@
 when:
   path: "charts/mastodon/**"
 branches:
-  - never
+  - main
 
 pipeline:
   clone-real:
