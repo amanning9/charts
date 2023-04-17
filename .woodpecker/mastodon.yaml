@@ -1,6 +1,6 @@
 ---
 when:
-  branch: never
+  path: "charts/mastodon/**"
 branches:
   - never
 
