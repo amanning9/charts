@@ -68,6 +68,8 @@ spec:
               mountPath: /config
             - name: storage
               mountPath: /media/storage
+            - name: database
+              mountPath: /media/database
             - name: certificate-secret
               mountPath: /media/certificates
             - name: main-configmap
@@ -116,6 +118,13 @@ spec:
             claimName: {{ include "homeassistant.fullname" . }}-storage
             {{- else }}
             claimName: {{ .Values.pvc.storage.existingClaim }}
+            {{- end }}
+        - name: database
+          persistentVolumeClaim:
+            {{- if not .Values.pvc.database.existingClaim }}
+            claimName: {{ include "homeassistant.fullname" . }}-database
+            {{- else }}
+            claimName: {{ .Values.pvc.database.existingClaim }}
             {{- end }}
         - name: init
           configMap:

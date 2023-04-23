@@ -33,3 +33,21 @@ spec:
     requests:
       storage: {{ .Values.pvc.storage.storage | quote }}
 {{- end }}
+---
+{{- if not .Values.pvc.database.existingClaim -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "homeassistant.fullname" . }}-database
+  labels:
+    {{- include "homeassistant.labels" . | nindent 4 }}
+  annotations:
+    helm.sh/resource-policy: "keep"
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: {{ .Values.pvc.database.storageClassName | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.pvc.database.storage | quote }}
+{{- end }}

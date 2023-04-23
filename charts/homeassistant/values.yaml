@@ -56,6 +56,11 @@ pvc:
     existingClaim: false
     storageClassName: ""
     storage: "5Gi"
+  database:
+    existingClaim: false
+    storageClassName: ""
+    storage: "5Gi"
+
 
 mainConfig:
   http:
@@ -63,6 +68,8 @@ mainConfig:
     ssl_certificate: /media/certificates/tls.crt
     ssl_key: /media/certificates/tls.key
     use_x_forwarded_for: true
+  recorder:
+    db_url: sqlite:////media/database/hass-db.sqlite
 config:
   packages: ""
 
