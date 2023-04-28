@@ -1,0 +1,19 @@
+{{- if .Values.pvc.enabled }}
+{{- if not .Values.pvc.existingClaim -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "whisper.fullname" . }}
+  labels:
+    {{- include "whisper.labels" . | nindent 4 }}
+  annotations:
+    helm.sh/resource-policy: "keep"
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: {{ .Values.pvc.storageClassName | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.pvc.storage | quote }}
+{{- end }}
+{{- end }}
