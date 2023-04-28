@@ -2,7 +2,7 @@ image:
   repository: docker.io/rhasspy/wyoming-piper
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: "latest" # currently no versions are tagged.
 
 imagePullSecrets: []
 nameOverride: ""
