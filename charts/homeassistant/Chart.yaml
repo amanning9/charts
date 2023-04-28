@@ -2,5 +2,5 @@ apiVersion: v2
 name: homeassistant
 description: A Helm chart for Homeassistant
 type: application
-version: 0.1.0
-appVersion: "2023.3.1"
+version: 0.2.0
+appVersion: "2023.4.6"
