@@ -44,7 +44,7 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
           args:
             - "--voice"
-            - {{ .Values.voice }}
+            - {{ .Values.config.voice }}
           volumeMounts:
             - name: data
               mountPath: /data
