@@ -8,7 +8,7 @@ data:
   configuration.yaml: |
     homeassistant:
       {{- range $key, $value := .Values.config.homeassistant }}
-      {{ printf "%s: %s" $key ($value | quote) }}
+      {{ printf "%s: %s" $key ($value | toJson) }}
       {{- end }}
       packages: !include_dir_named /media/packages
     default_config:
