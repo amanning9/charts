@@ -8,7 +8,11 @@ data:
     init.py: |
         import pathlib
         # Symlink some paths to move them outside the config volume.
-        paths = {"/config/.storage": "/media/storage", "/config/configuration.yaml": "/media/configuration/configuration.yaml"}
+        paths = {
+            "/config/.storage": "/media/storage",
+            "/config/configuration.yaml": "/media/configuration/configuration.yaml",
+            "/config/custom-sentences": "/media/custom-sentences",
+            }
         for from_p, to in paths.items():
             try:
                 from_path = pathlib.Path(from_p)

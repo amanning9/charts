@@ -76,6 +76,8 @@ spec:
               mountPath: /media/configuration
             - name: packages-configmap
               mountPath: /media/packages
+            - name: custom-sentences-configmap
+              mountPath: /media/custom-sentences/en
           securityContext:
             privileged: true
       initContainers:
@@ -138,3 +140,6 @@ spec:
         - name: packages-configmap
           configMap:
             name: {{ include "homeassistant.fullname" . }}-packages
+        - name: custom-sentences-configmap
+          configMap:
+            name: {{ include "homeassistant.fullname" . }}-custom-sentences

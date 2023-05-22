@@ -72,6 +72,7 @@ mainConfig:
     db_url: sqlite:////media/database/hass-db.sqlite
 config:
   packages: ""
+  customSentences: ""
 
 cert:
   dnsNames: []

@@ -28,3 +28,15 @@ data:
   "{{ $key }}": |
     {{- $value | toYaml | nindent 4 }}
   {{- end }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "homeassistant.fullname" . }}-custom-sentences
+  labels:
+    {{- include "homeassistant.labels" . | nindent 4 }}
+data:
+  {{- range $key, $value := fromYaml .Values.config.customSentences }}
+  "{{ $key }}": |
+    {{- $value | toYaml | nindent 4 }}
+  {{- end }}
