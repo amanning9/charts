@@ -52,6 +52,8 @@ spec:
           volumeMounts:
             - name: config
               mountPath: /config
+            - name: temp-store
+              mountPath: /media/store
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -72,3 +74,5 @@ spec:
             {{- else }}
             claimName: {{ .Values.pvc.existingClaim }}
             {{- end }}
+        - name: temp-store
+          emptyDir: {}
