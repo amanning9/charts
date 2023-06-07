@@ -1,4 +1,4 @@
-{{- if not .Values.pvc.existingClaim -}}
+{{- if not .Values.pvc.config.existingClaim -}}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -10,8 +10,22 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: {{ .Values.pvc.storageClassName | quote }}
+  storageClassName: {{ .Values.pvc.config.storageClassName | quote }}
   resources:
     requests:
-      storage: {{ .Values.pvc.storage | quote }}
+      storage: {{ .Values.pvc.config.storage | quote }}
 {{- end }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "esphome.fullname" . }}-store
+  labels:
+    {{- include "esphome.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: {{ .Values.pvc.store.storageClassName | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.pvc.store.storage | quote }}

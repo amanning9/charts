@@ -48,6 +48,10 @@ tolerations: []
 affinity: {}
 
 pvc:
-  existingClaim: false
-  storageClassName: ""
-  storage: 5Gi
+  config:
+    existingClaim: false
+    storageClassName: ""
+    storage: 1Gi
+  store:
+    storageClassName: ""
+    storage: 5Gi

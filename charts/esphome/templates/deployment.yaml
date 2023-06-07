@@ -52,7 +52,7 @@ spec:
           volumeMounts:
             - name: config
               mountPath: /config
-            - name: temp-store
+            - name: store
               mountPath: /media/store
       {{- with .Values.nodeSelector }}
       nodeSelector:
@@ -69,10 +69,15 @@ spec:
       volumes:
         - name: config
           persistentVolumeClaim:
-            {{- if not .Values.pvc.existingClaim }}
+            {{- if not .Values.pvc.config.existingClaim }}
             claimName: {{ include "esphome.fullname" . }}-config
             {{- else }}
-            claimName: {{ .Values.pvc.existingClaim }}
+            claimName: {{ .Values.pvc.config.existingClaim }}
             {{- end }}
-        - name: temp-store
-          emptyDir: {}
+        - name: store
+          persistentVolumeClaim:
+            {{- if not .Values.pvc.store.existingClaim }}
+            claimName: {{ include "esphome.fullname" . }}-store
+            {{- else }}
+            claimName: {{ .Values.pvc.config.existingClaim }}
+            {{- end }}
