@@ -52,6 +52,6 @@ pvc:
     existingClaim: false
     storageClassName: ""
     storage: 1Gi
-  store:
+  cache:
     storageClassName: ""
     storage: 5Gi

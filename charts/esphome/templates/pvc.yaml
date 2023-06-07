@@ -19,13 +19,13 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ include "esphome.fullname" . }}-store
+  name: {{ include "esphome.fullname" . }}-cache
   labels:
     {{- include "esphome.labels" . | nindent 4 }}
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: {{ .Values.pvc.store.storageClassName | quote }}
+  storageClassName: {{ .Values.pvc.cache.storageClassName | quote }}
   resources:
     requests:
-      storage: {{ .Values.pvc.store.storage | quote }}
+      storage: {{ .Values.pvc.cache.storage | quote }}

@@ -52,8 +52,8 @@ spec:
           volumeMounts:
             - name: config
               mountPath: /config
-            - name: store
-              mountPath: /media/store
+            - name: cache
+              mountPath: /cache
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -74,10 +74,10 @@ spec:
             {{- else }}
             claimName: {{ .Values.pvc.config.existingClaim }}
             {{- end }}
-        - name: store
+        - name: cache
           persistentVolumeClaim:
-            {{- if not .Values.pvc.store.existingClaim }}
-            claimName: {{ include "esphome.fullname" . }}-store
+            {{- if not .Values.pvc.cache.existingClaim }}
+            claimName: {{ include "esphome.fullname" . }}-cache
             {{- else }}
             claimName: {{ .Values.pvc.config.existingClaim }}
             {{- end }}
