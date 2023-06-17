@@ -3,5 +3,5 @@ name: mautrix-whatsapp
 description: whatsapp <-> matrix bridge
 type: application
 
-version: 1.5.0
-appVersion: "v0.8.5"
+version: 1.6.0
+appVersion: "v0.8.6"
