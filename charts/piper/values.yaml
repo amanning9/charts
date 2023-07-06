@@ -51,3 +51,5 @@ pvc:
   existingClaim: ""
   storageClassName : ""
   storage: 1Gi
+
+downloadVoices: []

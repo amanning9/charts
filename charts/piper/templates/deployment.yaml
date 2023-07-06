@@ -24,6 +24,19 @@ spec:
       {{- end }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{ if .Values.downloadVoices }}
+      initContainers:
+        - name: download-voices
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: registry.fedoraproject.org/fedora-minimal
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: curl --remote-name-all {{ join " " .Values.downloadVoices }}
+          workingDir: /data
+          volumeMounts:
+            - name: data
+              mountPath: /data
+      {{ endif }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
