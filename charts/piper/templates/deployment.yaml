@@ -34,7 +34,7 @@ spec:
           command:
             - "curl"
             - "--remote-name-all"
-            {{ .Values.downloadVoices | toYaml }}
+            {{- .Values.downloadVoices | toYaml | nindent 12 }}
           workingDir: /data
           volumeMounts:
             - name: data

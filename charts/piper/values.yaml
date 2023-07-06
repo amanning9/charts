@@ -52,4 +52,6 @@ pvc:
   storageClassName : ""
   storage: 1Gi
 
-downloadVoices: []
+downloadVoices: 
+  - foo
+  - bar
