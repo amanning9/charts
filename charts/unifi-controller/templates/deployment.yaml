@@ -33,15 +33,15 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - name: PUID
-              value: 1000
+              value: "1000"
             - name: PGID
-              value: 1000
+              value: "1000"
             - name: TZ
-              value: Europe/London
+              value: "Europe/London"
             - name: MEM_LIMIT
-              value: 1024
+              value: "512"
             - name: MEM_STARTUP
-              value: 1024
+              value: "512"
           ports:
             - name: http
               containerPort: 8443
