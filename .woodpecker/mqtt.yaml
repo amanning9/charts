@@ -1,8 +1,7 @@
 ---
 when:
   path: "charts/mqtt/**"
-branches:
-  - main
+  branch: main
 pipeline:
   package:
     image: "docker.io/alpine/helm:latest"
