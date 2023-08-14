@@ -49,3 +49,4 @@ pvc:
   existingClaim: false
   storageClassName: ""
   storage: "1Gi"
+
