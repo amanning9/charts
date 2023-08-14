@@ -2,7 +2,7 @@
 when:
   path: "charts/mautrix-whatsapp/**"
   branch: main
-pipeline:
+steps:
   package:
     image: "docker.io/alpine/helm:latest"
     secrets: [helm_user, helm_password, helm_repo]

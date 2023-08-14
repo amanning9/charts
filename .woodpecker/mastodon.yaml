@@ -3,7 +3,7 @@ when:
   path: "charts/mastodon/**"
   branch: main
 
-pipeline:
+steps:
   clone-real:
     image: "docker.io/alpine/git"
     commands:
