@@ -1,0 +1,15 @@
+{{- if not .Values.pvc.existingClaim -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "unifi-controller.fullname" . }}
+  labels:
+    {{- include "unifi-controller.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: {{ .Values.pvc.storageClassName | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.pvc.storage | quote }}
+{{- end }}
