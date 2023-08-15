@@ -43,7 +43,7 @@ spec:
             - name: MEM_LIMIT
               value: "1024"
             - name: MEM_STARTUP
-              value: "1024"
+              value: "512"
           ports:
             - name: http
               containerPort: 8443
