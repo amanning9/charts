@@ -63,7 +63,7 @@ pcv:
   config:
     existingClaim: ""
     storage: 1Gi
-  storage:
+  media:
     existingClaim: ""
     storage: 1Gi
   cache:
