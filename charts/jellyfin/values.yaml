@@ -62,7 +62,10 @@ affinity: {}
 pcv:
   config:
     existingClaim: ""
+    storage: 1Gi
   storage:
     existingClaim: ""
+    storage: 1Gi
   cache:
     existingClaim: ""
+    storage: 1Gi

@@ -1,0 +1,48 @@
+---
+{{- if not .Values.pvc.config.existingClaim -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "jellyfin.fullname" . }}-config
+  labels:
+    {{- include "jellyfin.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: {{ .Values.pvc.config.storageClassName | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.pvc.config.storage | quote }}
+{{- end }}
+---
+{{- if not .Values.pvc.storage.existingClaim -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "jellyfin.fullname" . }}-storage
+  labels:
+    {{- include "jellyfin.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: {{ .Values.pvc.storage.storageClassName | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.pvc.storage.storage | quote }}
+{{- end }}
+---
+{{- if not .Values.pvc.cache.existingClaim -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "jellyfin.fullname" . }}-cache
+  labels:
+    {{- include "jellyfin.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: {{ .Values.pvc.cache.storageClassName | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.pvc.cache.storage | quote }}
+{{- end }}
