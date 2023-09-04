@@ -15,7 +15,7 @@ spec:
       storage: {{ .Values.pvc.config.storage | quote }}
 {{- end }}
 ---
-{{- if not .Values.pvc.storage.existingClaim -}}
+{{- if not .Values.pvc.media.existingClaim -}}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -25,10 +25,10 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: {{ .Values.pvc.storage.storageClassName | quote }}
+  storageClassName: {{ .Values.pvc.media.storageClassName | quote }}
   resources:
     requests:
-      storage: {{ .Values.pvc.storage.storage | quote }}
+      storage: {{ .Values.pvc.media.storage | quote }}
 {{- end }}
 ---
 {{- if not .Values.pvc.cache.existingClaim -}}
