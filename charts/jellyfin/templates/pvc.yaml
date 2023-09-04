@@ -1,5 +1,5 @@
----
 {{- if not .Values.pvc.config.existingClaim -}}
+---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -14,8 +14,8 @@ spec:
     requests:
       storage: {{ .Values.pvc.config.storage | quote }}
 {{- end }}
----
 {{- if not .Values.pvc.media.existingClaim -}}
+---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -30,8 +30,8 @@ spec:
     requests:
       storage: {{ .Values.pvc.media.storage | quote }}
 {{- end }}
----
 {{- if not .Values.pvc.cache.existingClaim -}}
+---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
