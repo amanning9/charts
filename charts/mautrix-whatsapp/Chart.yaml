@@ -4,4 +4,4 @@ description: whatsapp <-> matrix bridge
 type: application
 
 version: 1.6.0
-appVersion: "v0.8.6"
+appVersion: "v0.10.0"
