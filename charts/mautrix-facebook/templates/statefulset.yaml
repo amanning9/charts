@@ -1,10 +1,11 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: {{ include "mautrix-facebook.fullname" . }}
   labels:
     {{- include "mautrix-facebook.labels" . | nindent 4 }}
 spec:
+  serviceName: {{ include "mautrix-facebook.fullname" . }}-appservice-nocollide
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   replicas: 1
   selector:
@@ -48,6 +49,25 @@ spec:
             - mautrix_facebook
             - -c
             - /data/config.yaml
+            - --no-update
+          startupProbe:
+            httpGet:
+              port: appservice
+              path: "/_matrix/mau/live"
+            periodSeconds: 10
+            failureThreshold: 60
+          livenessProbe:
+            httpGet:
+              port: appservice
+              path: "/_matrix/mau/live"
+            periodSeconds: 10
+            failureThreshold: 12
+          readinessProbe:
+            httpGet:
+              port: appservice
+              path: "/_matrix/mau/ready"
+            periodSeconds: 10
+            failureThreshold: 12
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
