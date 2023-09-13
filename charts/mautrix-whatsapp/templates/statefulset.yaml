@@ -1,10 +1,11 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: {{ include "mautrix-whatsapp.fullname" . }}
   labels:
     {{- include "mautrix-whatsapp.labels" . | nindent 4 }}
 spec:
+  serviceName: {{ include "mautrix-whatsapp.fullname" . }}-appservice-nocollide
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   replicas: 1
   selector:
@@ -47,6 +48,25 @@ spec:
           workingDir: "/data"
           command:
             - "/usr/bin/mautrix-whatsapp"
+            - --no-update
+          startupProbe:
+            httpGet:
+              port: appservice
+              path: "/_matrix/mau/live"
+            periodSeconds: 10
+            failureThreshold: 60
+          livenessProbe:
+            httpGet:
+              port: appservice
+              path: "/_matrix/mau/live"
+            periodSeconds: 10
+            failureThreshold: 12
+          readinessProbe:
+            httpGet:
+              port: appservice
+              path: "/_matrix/mau/ready"
+            periodSeconds: 10
+            failureThreshold: 12
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

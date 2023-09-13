@@ -5,6 +5,7 @@ metadata:
   labels:
     {{- include "mautrix-whatsapp.labels" . | nindent 4 }}
 spec:
+  publishNotReadyAddresses: true
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
