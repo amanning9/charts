@@ -45,4 +45,4 @@ schedule: "5 4 * * *"
 
 postgresConnectionString: ""
 chunkSize: "500"
-chunkCount: "100"
+numChunks: "100"
