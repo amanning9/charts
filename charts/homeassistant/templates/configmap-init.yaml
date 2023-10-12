@@ -11,7 +11,7 @@ data:
         paths = {
             "/config/.storage": "/media/storage",
             "/config/configuration.yaml": "/media/configuration/configuration.yaml",
-            "/config/custom-sentences": "/media/custom-sentences",
+            "/config/custom_sentences": "/media/custom-sentences",
             }
         for from_p, to in paths.items():
             try:
