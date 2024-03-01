@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "mautrix-meta.fullname" . }}
+  labels:
+    {{- include "mautrix-meta.labels" . | nindent 4 }}
+spec:
+  serviceName: {{ include "mautrix-meta.fullname" . }}-appservice-nocollide
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "mautrix-meta.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+      {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "mautrix-meta.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: appservice
+              containerPort: 29319
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: mainconfig
+              readOnly: true
+              mountPath: "/data"
+            - name: tmp
+              mountPath: "/tmp"
+          workingDir: "/data"
+          command:
+            - "/usr/bin/mautrix-meta"
+            - --no-update
+          startupProbe:
+            httpGet:
+              port: appservice
+              path: "/_matrix/mau/live"
+            periodSeconds: 10
+            failureThreshold: 60
+          livenessProbe:
+            httpGet:
+              port: appservice
+              path: "/_matrix/mau/live"
+            periodSeconds: 10
+            failureThreshold: 12
+          readinessProbe:
+            httpGet:
+              port: appservice
+              path: "/_matrix/mau/ready"
+            periodSeconds: 10
+            failureThreshold: 12
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+        - name: mainconfig
+          secret:
+            secretName: {{ include "mautrix-meta.fullname" . }}
+        - name: tmp
+          emptyDir: {}
