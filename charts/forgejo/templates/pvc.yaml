@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "forgejo.fullname" . }}-repos
+  labels:
+    {{- include "forgejo.labels" . | nindent 4 }}
+  annotations:
+    helm.sh/resource-policy: "keep"
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: {{ .Values.pvc.repos.storageClassName | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.pvc.repos.storage | quote }}
