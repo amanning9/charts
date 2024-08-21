@@ -33,7 +33,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: 9091
+              containerPort: 9000
               protocol: TCP
           livenessProbe:
             httpGet:
@@ -48,6 +48,9 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /app/data/
+          envFrom:
+          - secretRef:
+              name: {{ include "mealie.fullname" . }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

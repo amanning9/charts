@@ -13,8 +13,8 @@ fullnameOverride: ""
 
 podAnnotations: {}
 
-podSecurityContext: {}
-  # fsGroup: 2000
+podSecurityContext:
+  fsGroup: 911
 
 securityContext:
   capabilities:
@@ -22,7 +22,7 @@ securityContext:
     - ALL
   readOnlyRootFilesystem: true
   runAsNonRoot: true
-  # runAsUser: 1000
+  runAsUser: 911
 
 service:
   type: ClusterIP
@@ -65,3 +65,6 @@ affinity: {}
 pvc:
   storageClassName: ""
   storage: 1Gi
+
+config:
+  ALLOW_SIGNUP: "false"
