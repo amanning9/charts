@@ -27,6 +27,22 @@ spec:
       {{- end }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: {{ .Chart.Name }}-bootstrap
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - name: data
+              mountPath: "/data"
+            - name: mainconfig
+              readOnly: true
+              mountPath: "/config"
+          command:
+            - cp
+            - /config/config.yaml
+            - /data/config.yaml
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -40,15 +56,13 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
-            - name: mainconfig
-              readOnly: true
+            - name: data
               mountPath: "/data"
             - name: tmp
               mountPath: "/tmp"
           workingDir: "/data"
           command:
             - "/usr/bin/mautrix-whatsapp"
-            - --no-update
           startupProbe:
             httpGet:
               port: appservice
@@ -84,4 +98,6 @@ spec:
           secret:
             secretName: {{ include "mautrix-whatsapp.fullname" . }}
         - name: tmp
+          emptyDir: {}
+        - name: data
           emptyDir: {}

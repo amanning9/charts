@@ -1,15 +1,16 @@
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "mealie.fullname" . }}
+  name: {{ include "freeradius.fullname" . }}
   labels:
-    {{- include "mealie.labels" . | nindent 4 }}
+    {{- include "freeradius.labels" . | nindent 4 }}
 spec:
-  replicas: 1
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
   selector:
     matchLabels:
-      {{- include "mealie.selectorLabels" . | nindent 6 }}
+      {{- include "freeradius.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -17,12 +18,13 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "mealie.selectorLabels" . | nindent 8 }}
+        {{- include "freeradius.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      serviceAccountName: {{ include "freeradius.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -32,27 +34,28 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - name: http
-              containerPort: 9000
-              protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /
-              port: http
-          readinessProbe:
-            httpGet:
-              path: /
-              port: http
+            - name: radius
+              containerPort: 1812
+              protocol: UDP
+          args:
+            - '-X'
+          #  - '-d'
+          #  - '/etc/freeradius-mount'
+          #livenessProbe:
+          #  httpGet:
+          #    path: /
+          #    port: http
+          #readinessProbe:
+          #  httpGet:
+          #    path: /
+          #    port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
-            - name: data
-              mountPath: /app/data/
-            - name: tmp
-              mountPath: /tmp/
-          envFrom:
-          - secretRef:
-              name: {{ include "mealie.fullname" . }}
+          - mountPath: /etc/freeradius
+            name: etc-freeradius
+          - mountPath: /etc/freeradius-cert
+            name: cert
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -66,8 +69,9 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       volumes:
-        - name: data
-          persistentVolumeClaim:
-            claimName: {{ include "mealie.fullname" . }}
-        - name: tmp
-          emptydir: {}
+      - name: etc-freeradius
+        persistentVolumeClaim:
+          claimName: {{ include "freeradius.fullname" . }}-etc-freeradius
+      - name: cert
+        secret:
+          secretName: {{ include "freeradius.fullname" . }}-cert-secret
